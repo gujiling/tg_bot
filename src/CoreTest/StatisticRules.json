@@ -1,0 +1,14 @@
+﻿[
+  {
+    "RuleId": 1,
+    "ChatType": "Private",
+    "StatisticWord": "怂",
+    "CharId": 165391203
+  },
+  {
+    "RuleId": 0,
+    "ChatType": "Private",
+    "StatisticWord": "qwer",
+    "CharId": 165391203
+  }
+]
