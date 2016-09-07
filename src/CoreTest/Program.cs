@@ -11,7 +11,7 @@ namespace CoreTest
 {
     public class Program
     {
-        private static string _tokenkey = @"249522019:AAEx0_Vq2i6HYJVI_aQ9YZHi8LtAR5zeOFY";
+        private static string _tokenkey = @"your telegram token key";
 
         private static readonly TelegramBotClient Bot = new TelegramBotClient(_tokenkey);
 
@@ -95,7 +95,11 @@ namespace CoreTest
         private static void BotOnOnUpdate(object sender, UpdateEventArgs e)
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+#if Debug
             Console.WriteLine($"Bot on update type: {e.Update.Message.Chat.Type}");
+            Console.WriteLine($"Bot on update: {e.Update.Message.Text}");
+#endif
+
             if (e.Update.Message.Type == MessageType.TextMessage && !e.Update.Message.Text.StartsWith(@"/"))
             {
 #if Debug
@@ -106,13 +110,12 @@ namespace CoreTest
                 var rule = CalcStatisticInfo.Instance.IsNeedAddInfo(e.Update.Message.Chat.Id, e.Update.Message.Text);
                 if (rule != null)
                     CalcStatisticInfo.Instance.AddInfo(rule.RuleId, e.Update.Message.From.Username);
-                Console.WriteLine($"Bot on update: {e.Update.Message.Text}");
             }
         }
 
-        #endregion
+#endregion
 
-        #region handle methods
+#region handle methods
 
         private static string HandleSetStatsWord(Message message)
         {
@@ -135,7 +138,7 @@ namespace CoreTest
         private static string HandleGetWordStats(Message message)
         {
 #if Release
-            //only group can add statictis rule
+            //only group can get statictis information
             if (message.Chat.Type!=ChatType.Group || message.Chat.Type != ChatType.Supergroup)
             {
                 return $"Please add bot in a group or supergroup";
@@ -155,6 +158,6 @@ namespace CoreTest
             return $"Command: \"{message.Text}\" syntax error! Please use: /GetWordStats [word] [top number] or see /help.";
         }
 
-        #endregion
+#endregion
     }
 }

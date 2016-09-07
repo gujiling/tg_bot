@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using iBoxDB.LocalServer;
 
 namespace CoreTest
 {
@@ -10,6 +11,7 @@ namespace CoreTest
 
         private const string RuleFile = "StatisticRules.json";
         private const string InfoFile = "StatisticInfos.json";
+        private const string IboxDbFile = "StatisticInfos.json";
 
         #endregion
 
@@ -68,6 +70,9 @@ namespace CoreTest
         {
             RuleList.Add(new StatisticRule(GetRuleIndex(), chatType, statisticWord, chatId));
             JsonOperator.SerializeObjectToFile(RuleList, RuleFile);
+            using (var box = new DB())
+            {
+            }
         }
 
         public long? GetRuleId(long chatId, string word)

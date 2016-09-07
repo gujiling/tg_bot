@@ -3,6 +3,28 @@
   "version": 2,
   "targets": {
     ".NETCoreApp,Version=v1.0": {
+      "iBoxDB/2.9.1": {
+        "type": "package",
+        "dependencies": {
+          "System.Collections": "(, )",
+          "System.Globalization": "(, )",
+          "System.IO": "(, )",
+          "System.IO.FileSystem": "(, )",
+          "System.Reflection": "(, )",
+          "System.Reflection.Extensions": "(, )",
+          "System.Runtime": "(, )",
+          "System.Runtime.Extensions": "(, )",
+          "System.Text.Encoding": "(, )",
+          "System.Threading": "(, )",
+          "System.Threading.Thread": "(, )"
+        },
+        "compile": {
+          "lib/dnxcore/iBoxDB.dll": {}
+        },
+        "runtime": {
+          "lib/dnxcore/iBoxDB.dll": {}
+        }
+      },
       "Libuv/1.9.0": {
         "type": "package",
         "dependencies": {
@@ -1982,7 +2004,7 @@
           "ref/netstandard1.3/System.Threading.Thread.dll": {}
         },
         "runtime": {
-          "lib/netstandard1.3/_._": {}
+          "lib/netstandard1.3/System.Threading.Thread.dll": {}
         }
       },
       "System.Threading.ThreadPool/4.0.10": {
@@ -2167,6 +2189,21 @@
     }
   },
   "libraries": {
+    "iBoxDB/2.9.1": {
+      "sha512": "rIPaTpWZ8DiqEJaOS09ADTui2SFV9MsoBiEhzo4YQmlSIyVwwqm2VBRMtVN+N+a1GkIV6k29B7AY8ExC1PyOxA==",
+      "type": "package",
+      "path": "iBoxDB/2.9.1",
+      "files": [
+        "content/WSDatabaseConfig.cs",
+        "content/iBoxDB291.cs",
+        "iBoxDB.2.9.1.nupkg.sha512",
+        "iBoxDB.nuspec",
+        "lib/dnxcore/iBoxDB.dll",
+        "lib/iBoxDB.dll",
+        "lib/net20/iBoxDB.NET2.dll",
+        "lib/net45/iBoxDB.dll"
+      ]
+    },
     "Libuv/1.9.0": {
       "sha512": "9Q7AaqtQhS8JDSIvRBt6ODSLWDBI4c8YxNxyCQemWebBFUtBbc6M5Vi5Gz1ZyIUlTW3rZK9bIr5gnVyv0z7a2Q==",
       "type": "package",
@@ -7016,7 +7053,8 @@
       "System.IO >= 4.1.0",
       "System.IO.FileSystem >= 4.0.1",
       "System.Text.Encoding.CodePages >= 4.0.1",
-      "Telegram.Bot >= 10.3.1"
+      "Telegram.Bot >= 10.3.1",
+      "iBoxDB >= 2.9.1"
     ],
     ".NETCoreApp,Version=v1.0": []
   },
