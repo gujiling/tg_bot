@@ -5,13 +5,6 @@ namespace CoreTest
 {
     public class CalcStatisticInfo
     {
-        #region const
-
-        private const string RuleFile = "StatisticRules.json";
-        private const string InfoFile = "StatisticInfos.json";
-
-        #endregion
-
         #region Singleton
 
         private static readonly object _locker = new object();
@@ -79,6 +72,20 @@ namespace CoreTest
             }
         }
 
+        public string GetStatisticRule(long chatId)
+        {
+            using (var db = new SqliteContext())
+            {
+                var fnd = db.Rules.Where(o => o.CharId == chatId);
+                var ret = @"All statistic rules：" + Environment.NewLine;
+                foreach (var rule in fnd)
+                {
+                    ret += $"Word: {rule.StatisticWord}" + Environment.NewLine;
+                }
+                return ret;
+            }
+        }
+
         #endregion
 
         #region statistic functions
@@ -99,15 +106,6 @@ namespace CoreTest
                 db.SaveChanges();
             }
 
-        }
-
-        private IQueryable<StatisticInfo> GetStatictisByRuleId(long ruleId)
-        {
-            //return InfoList.FindAll(o => o.RuleId == ruleId);
-            using (var db = new SqliteContext())
-            {
-                return db.Infos.Where(o => o.RuleId == ruleId);
-            }
         }
 
         public string GetTopString(long? ruleId, string word, int topNum = 1)

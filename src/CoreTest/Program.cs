@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Text;
-using Microsoft.EntityFrameworkCore;
 using Telegram.Bot;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types;
@@ -11,7 +10,7 @@ namespace CoreTest
 {
     public class Program
     {
-        private static string _tokenkey = @"249522019:AAFtpYi6Xrzpjb80XkGeae9KsM6mEMeqzSs";
+        private static string _tokenkey = @"249522019:AAFVE6W9fvhtC_6V-S6tkPuNy7A16J_6qmk";
 
         private static readonly TelegramBotClient Bot = new TelegramBotClient(_tokenkey);
 
@@ -74,6 +73,11 @@ namespace CoreTest
             else if (message.Text.StartsWith("/GetWordStats"))
             {
                 var str = HandleGetWordStats(message);
+                await Bot.SendTextMessageAsync(message.Chat.Id, str, replyMarkup: new ReplyKeyboardHide());
+            }
+            else if (message.Text.StartsWith("/DisplayStatsRule"))
+            {
+                var str = HandleDisplayStatsRule(message);
                 await Bot.SendTextMessageAsync(message.Chat.Id, str, replyMarkup: new ReplyKeyboardHide());
             }
             else
@@ -154,6 +158,18 @@ namespace CoreTest
                 return CalcStatisticInfo.Instance.GetTopString(ruleId, cmds[1], Convert.ToInt32(cmds[2]));
             }
             return $"Command: \"{message.Text}\" syntax error! Please use: /GetWordStats [word] [top number] or see /help.";
+        }
+
+        private static string HandleDisplayStatsRule(Message message)
+        {
+#if Release
+            //only group can add statictis rule
+            if (message.Chat.Type!=ChatType.Group || message.Chat.Type != ChatType.Supergroup)
+            {
+                return $"Please add bot in a group or supergroup";
+            }
+#endif
+            return CalcStatisticInfo.Instance.GetStatisticRule(message.Chat.Id);
         }
 
         #endregion
