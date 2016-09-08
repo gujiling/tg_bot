@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace CoreTest
@@ -34,22 +33,9 @@ namespace CoreTest
 
         #endregion
 
-        #region construct
-
-        private CalcStatisticInfo()
-        {
-            RuleList = JsonOperator.DeserializeObjectFromFile<List<StatisticRule>>(RuleFile) ?? new List<StatisticRule>();
-            InfoList = JsonOperator.DeserializeObjectFromFile<List<StatisticInfo>>(InfoFile) ?? new List<StatisticInfo>();
-        }
-
-        #endregion
-
         #region fields & properties
 
         private readonly object _lockerRule = new object();
-
-        private List<StatisticRule> RuleList { get; set; }
-        private List<StatisticInfo> InfoList { get; set; }
 
         #endregion
 
@@ -59,26 +45,38 @@ namespace CoreTest
         {
             lock (_lockerRule)
             {
-                if (RuleList == null || RuleList.Count == 0) return 0;
-                return RuleList.Max(o => o.RuleId) + 1;
+                using (var db = new SqliteContext())
+                {
+                    return db.Rules.Any() ? db.Rules.Max(o => o.RuleId) : 0;
+                }
             }
         }
 
         public void AddRule(string chatType, string statisticWord, long chatId)
         {
-            RuleList.Add(new StatisticRule(GetRuleIndex(), chatType, statisticWord, chatId));
-            JsonOperator.SerializeObjectToFile(RuleList, RuleFile);
+            var rule = new StatisticRule(GetRuleIndex(), chatType, statisticWord, chatId);
+            using (var db = new SqliteContext())
+            {
+                db.Rules.Add(rule);
+                db.SaveChanges();
+            }
         }
 
         public long? GetRuleId(long chatId, string word)
         {
-            var rule = RuleList.SingleOrDefault(o => o.CharId == chatId && o.StatisticWord == word);
-            return rule?.RuleId;
+            using (var db = new SqliteContext())
+            {
+                var rule = db.Rules.SingleOrDefault(o => o.CharId == chatId && o.StatisticWord == word);
+                return rule?.RuleId;
+            }
         }
 
         public StatisticRule IsNeedAddInfo(long chatId, string text)
         {
-            return RuleList.FirstOrDefault(rule => rule.CharId == chatId && text.Contains(rule.StatisticWord));
+            using (var db = new SqliteContext())
+            {
+                return db.Rules.SingleOrDefault(rule => rule.CharId == chatId && text.Contains(rule.StatisticWord));
+            }
         }
 
         #endregion
@@ -87,19 +85,28 @@ namespace CoreTest
 
         public void AddInfo(int ruleId, string user)
         {
-            var info = InfoList.SingleOrDefault(o => o.RuleId == ruleId && o.UserId == user);
-            if (info == null)
+            using (var db = new SqliteContext())
             {
-                info = new StatisticInfo(ruleId, user);
-                InfoList.Add(info);
+                var info = db.Infos.SingleOrDefault(o => o.RuleId == ruleId && o.UserId == user);
+                if (info == null)
+                {
+                    info = new StatisticInfo(ruleId, user);
+                    db.Infos.Add(info);
+                }
+                info.Count++;
+                db.Infos.Update(info);
+                db.SaveChanges();
             }
-            info.Count++;
-            JsonOperator.SerializeObjectToFile(InfoList, InfoFile);
+
         }
 
-        private List<StatisticInfo> GetStatictisByRuleId(long ruleId)
+        private IQueryable<StatisticInfo> GetStatictisByRuleId(long ruleId)
         {
-            return InfoList.FindAll(o => o.RuleId == ruleId);
+            //return InfoList.FindAll(o => o.RuleId == ruleId);
+            using (var db = new SqliteContext())
+            {
+                return db.Infos.Where(o => o.RuleId == ruleId);
+            }
         }
 
         public string GetTopString(long? ruleId, string word, int topNum = 1)
@@ -107,7 +114,7 @@ namespace CoreTest
             var ret = string.Empty;
             if (ruleId == null) ret = $"Can't find rule: \"{word}\".";
             var infoList = GetStatictisByRuleId(Convert.ToInt64(ruleId));
-            if (infoList == null || infoList.Count == 0) ret = $"No one has said word: \"{word}\".";
+            if (infoList == null || !infoList.Any()) ret = $"No one has said word: \"{word}\".";
             var fnd = infoList.OrderByDescending(o => o.Count).Take(topNum);
             var i = 1;
             foreach (var info in fnd)

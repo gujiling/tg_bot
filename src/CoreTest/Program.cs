@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Text;
+using Microsoft.EntityFrameworkCore;
 using Telegram.Bot;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
-using Telegram.Bot.Types.InlineQueryResults;
 using Telegram.Bot.Types.ReplyMarkups;
 
 namespace CoreTest
 {
     public class Program
     {
-        private static string _tokenkey = @"249522019:AAEx0_Vq2i6HYJVI_aQ9YZHi8LtAR5zeOFY";
+        private static string _tokenkey = @"token";
 
         private static readonly TelegramBotClient Bot = new TelegramBotClient(_tokenkey);
 
@@ -79,7 +79,7 @@ namespace CoreTest
             else
             {
                 var usage = @"Usage:
-/request  - request location or contact
+/request - request location or contact
 /SetStatsWord - set the word you want to statistic, format: /SetStatsWord [word]
 /GetWordStats - get word statistic detail, format: /GetWordStats [word] [top number]";
                 await Bot.SendTextMessageAsync(message.Chat.Id, usage, replyMarkup: new ReplyKeyboardHide());

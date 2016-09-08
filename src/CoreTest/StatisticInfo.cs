@@ -8,6 +8,10 @@ namespace CoreTest
         public string UserId { get; set; }
         public int Count { get; set; }
 
+        public StatisticInfo()
+        {
+        }
+
         public StatisticInfo(int ruleId, string user)
         {
             RuleId = ruleId;

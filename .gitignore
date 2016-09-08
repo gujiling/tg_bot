@@ -10,7 +10,7 @@
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
-# directory
+# ReSharper cache directory
 _ReSharper.Caches/
 
 # Build results

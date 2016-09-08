@@ -7,6 +7,10 @@
         public string StatisticWord { get; set; }
         public long CharId { get; set; }
 
+        public StatisticRule()
+        {
+        }
+
         public StatisticRule(int id, string chatType, string statisticWord, long chatId)
         {
             RuleId = id;
