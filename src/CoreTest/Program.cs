@@ -10,7 +10,7 @@ namespace CoreTest
 {
     public class Program
     {
-        private static string _tokenkey = @"249522019:AAFVE6W9fvhtC_6V-S6tkPuNy7A16J_6qmk";
+        private static string _tokenkey = @"token";
 
         private static readonly TelegramBotClient Bot = new TelegramBotClient(_tokenkey);
 
