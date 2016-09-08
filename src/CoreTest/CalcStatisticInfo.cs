@@ -92,6 +92,7 @@ namespace CoreTest
                 {
                     info = new StatisticInfo(ruleId, user);
                     db.Infos.Add(info);
+                    db.SaveChanges();
                 }
                 info.Count++;
                 db.Infos.Update(info);
@@ -113,14 +114,18 @@ namespace CoreTest
         {
             var ret = string.Empty;
             if (ruleId == null) ret = $"Can't find rule: \"{word}\".";
-            var infoList = GetStatictisByRuleId(Convert.ToInt64(ruleId));
-            if (infoList == null || !infoList.Any()) ret = $"No one has said word: \"{word}\".";
-            var fnd = infoList.OrderByDescending(o => o.Count).Take(topNum);
-            var i = 1;
-            foreach (var info in fnd)
+            else
             {
-                ret += $"Top{i}: {info.UserId}, count: {info.Count}" + Environment.NewLine;
-                i++;
+                using (var db = new SqliteContext())
+                {
+                    var infoList = db.Infos.Where(o => o.RuleId == ruleId);
+                    var i = 1;
+                    foreach (var info in infoList.OrderByDescending(o => o.Count).Take(topNum))
+                    {
+                        ret += $"Top{i}: {info.UserId}, count: {info.Count}" + Environment.NewLine;
+                        i++;
+                    }
+                }
             }
             return ret;
         }
