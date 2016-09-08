@@ -80,7 +80,7 @@ namespace CoreTest
                 var str = HandleDisplayStatsRule(message);
                 await Bot.SendTextMessageAsync(message.Chat.Id, str, replyMarkup: new ReplyKeyboardHide());
             }
-            else
+            else if (message.Text.StartsWith("/help"))
             {
                 var usage = @"Usage:
 /request - request location or contact
