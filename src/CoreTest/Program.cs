@@ -43,7 +43,7 @@ namespace CoreTest
         {
             var message = messageEventArgs.Message;
 
-            if (message == null || message.Type != MessageType.TextMessage) return;
+            if (message == null || message.Type != MessageType.TextMessage || !message.Text.StartsWith(@"/")) return;
 
 #if Debug
             Console.WriteLine($"Bot on msg rec text: {message.Text}");
@@ -85,7 +85,7 @@ namespace CoreTest
                 var usage = @"Usage:
 /request - request location or contact
 /SetStatsWord - set the word you want to statistic, format: /SetStatsWord [word]
-/GetWordStats - get word statistic detail, format: /GetWordStats [word] [top number]
+/GetWordStats - get word statistic detail, format: /GetWordStats [word] [top_number]
 /DisplayStatsRule - display statistic rule in chat";
                 await Bot.SendTextMessageAsync(message.Chat.Id, usage, replyMarkup: new ReplyKeyboardHide());
             }
